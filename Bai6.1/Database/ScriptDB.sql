@@ -1,0 +1,48 @@
+CREATE DATABASE IF NOT EXISTS SalesDB;
+USE SalesDB;
+
+-- 1. Bảng Nhân viên
+CREATE TABLE NhanVien (
+    MaNV INT AUTO_INCREMENT PRIMARY KEY,
+    TenNV VARCHAR(100) NOT NULL,
+    SoDienThoai VARCHAR(15) UNIQUE,
+    ChucVu VARCHAR(50)
+);
+
+-- 2. Bảng Khách hàng
+CREATE TABLE KhachHang (
+    MaKH INT AUTO_INCREMENT PRIMARY KEY,
+    TenKH VARCHAR(100) NOT NULL,
+    DienThoai VARCHAR(15) UNIQUE,
+    DiemTichLuy INT DEFAULT 0
+);
+
+-- 3. Bảng Sản phẩm
+CREATE TABLE SanPham (
+    MaSP VARCHAR(20) PRIMARY KEY,
+    TenSP VARCHAR(150) NOT NULL,
+    GiaBan DECIMAL(18,2) CHECK (GiaBan > 0),
+    SoLuongTon INT CHECK (SoLuongTon >= 0)
+);
+
+-- 4. Bảng Hóa đơn
+CREATE TABLE HoaDon (
+    MaHD INT AUTO_INCREMENT PRIMARY KEY,
+    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    MaNV INT,
+    MaKH INT,
+    TongTien DECIMAL(18,2),
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV),
+    FOREIGN KEY (MaKH) REFERENCES KhachHang(MaKH)
+);
+
+-- 5. Bảng Chi tiết hóa đơn
+CREATE TABLE ChiTietHoaDon (
+    MaHD INT,
+    MaSP VARCHAR(20),
+    SoLuong INT CHECK (SoLuong > 0),
+    DongGia DECIMAL(18,2),
+    PRIMARY KEY (MaHD, MaSP),
+    FOREIGN KEY (MaHD) REFERENCES HoaDon(MaHD),
+    FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP)
+);
